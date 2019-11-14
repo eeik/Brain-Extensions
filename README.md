@@ -8,7 +8,8 @@ A few augmentative ideas for expanding capabilities of TheBrain 🧠
 * Kibana scripted fields to unlock insights into logfile data
 * Kibana search queries to build custom dashboards atop for historical review
 
-## Django App for interrogating and visualizing TheBrain w/ logfile historical overlay
+## Django Overlay App
+*for interrogating and visualizing TheBrain w/ logfile historical overlay*
 * R/O connection to TheBrain database for real-time state insights
 * dynamically rendered Kibana search filters for historical context
     - think *rich personal history* for the ongoing *use* of TheBrain
