@@ -1,0 +1,207 @@
+: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
+: : : KIBANA SCRIPTED FIELD CODE                          : : :
+: : : - code below is added to Kibana as scripted fields  : : :
+: : : - these fields are then used within dashboards      : : :
+: : : - titles are fairly self-explanatory                : : :
+: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
+
+===> "hasGUID" <=====================================================
+def hasGUID = false;
+
+if( !doc['event_message.keyword'].empty ) {
+def message = doc['event_message.keyword'].value.trim();
+def m = /[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}/.matcher(message);
+
+if ( m.find() ) { hasGUID = true; }
+}
+return hasGUID;
+
+
+===> "thought_id" <==================================================
+def valueString = "no match";
+
+if(!doc['event_message.keyword'].empty) {
+def message = doc['event_message.keyword'].value.trim();
+
+if( message.contains("Skipping search result") || message.contains("Resizing image from") || message.contains("Type not in thoughtTypeTree") || message.contains("Attach Path") || message.contains("Loading BitmapImage") || message.contains("Exception while trying to load search result thought icon") || message.contains("Direct lookup for") ) {
+def m = /[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}/.matcher(message);
+
+if ( m.find() ) { valueString = m.group(); }}}
+return valueString;
+
+
+===> "thought_name" <================================================
+def valueString = "no thought";
+
+if( !doc['event_message.keyword'].empty &&
+doc['event_code.keyword'].value == "470" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m= /Loading notes for\s[a-zÀ-ž\s\w\d\\\/\:\[\]^@|#‘’"“”&%$!+—–\-·;…¨.•°'?,@*=~™®«»<>(){}]+\s- isEmptyNote/.matcher(message);
+if ( m.find() ) {
+def tmp = m.group().replace('Loading notes for ','');
+tmp = tmp.replace(' - isEmptyNote','');
+if (tmp.length() > 1) { valueString = tmp; }
+}}
+
+if( !doc['event_message.keyword'].empty &&
+doc['event_code.keyword'].value == "140" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m= /resulted in\s[a-zÀ-ž\s\w\d\\\/\:\[\]^@|#‘’"“”&%$!+—–\-·;…¨.•°'?,@*=~™®«»<>(){}]+$/.matcher(message);
+if ( m.find() ) {
+def tmp = m.group().replace('resulted in ','');
+if (tmp.length() > 1) { valueString = tmp; }
+}}
+
+return valueString;
+
+
+===> "new_thought_name" <============================================
+Set thought name to: Will Pieris Pharmaceuticals Spend Its Cash Wisely?
+Set thought name to: The Bell Curve: Intelligence and Class Structure in American Life
+Set thought name to: Rejuve Nation by Yana Ufelman on ArtStation
+=====================================================================
+def newName = "unchanged";
+
+if(!doc['event_message.keyword'].empty) {
+if(doc['event_code.keyword'].value == "599" || doc['event_code.keyword'].value == "593" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m = /Set thought name to:\s[a-zÀ-ž\s\w\d\\\/\:\[\]^@|#‘’"“”&%$!+—–\-·;…¨.•°'?,@*=~™®«»<>(){}]+$/.matcher(message);
+
+if ( m.find() ) {
+def tmp = m.group().replace('Set thought name to: ','');
+if (tmp.length() > 1) { newName = tmp; }
+}}}
+return newName;
+
+
+===> "hasNotes" <====================================================
+def hasNotes = false;
+
+if( !doc['event_message.keyword'].empty &&
+doc['event_code.keyword'].value == "470" ) {
+def message = doc['event_message.keyword'].value.trim();
+
+if( message.contains("isEmptyNote:False") ) { hasNotes = true; }
+}
+return hasNotes;
+
+
+===> "search_term" <=================================================
+def valueString = "none";
+
+if(!doc['event_message.keyword'].empty) {
+if(doc['event_code.keyword'].value == "6256" || doc['event_code.keyword'].value == "6276" || doc['event_code.keyword'].value == "6281" || doc['event_code.keyword'].value == "6285" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m = /\'(.*?)\'/.matcher(message);
+
+if ( m.find() ) {
+def tmp = m.group().replace('\'','');
+if (tmp.length() > 1) { valueString = tmp; }
+}}}
+return valueString;
+
+
+===> "term_is_GUID" <================================================
+def isGUID = false;
+
+if(!doc['event_message.keyword'].empty) {
+if(doc['event_code.keyword'].value == "6256" || doc['event_code.keyword'].value == "6276" || doc['event_code.keyword'].value == "6281" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m1 = /\'(.*?)\'/.matcher(message);
+
+if ( m1.find() ) {
+def term = m1.group().replace('\'','');
+if (term.length() > 1) {
+def m2 = /^[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}$/.matcher(term);
+if ( m2.find() ) { isGUID = true; }
+}}}}
+return isGUID;
+
+
+===> "num_search_tokens" <===========================================
+TokenSearch 'fa' sorted 799 matches in 379 from 862 tokens.
+TokenSearch 'dark' sorted 77 matches in 81 from 79 tokens.
+=====================================================================
+def tokens = 0;
+
+if(!doc['event_message.keyword'].empty) {
+if( doc['event_code.keyword'].value == "6256" || doc['event_code.keyword'].value == "6276" || doc['event_code.keyword'].value == "6281" || doc['event_code.keyword'].value == "6281" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m = /from\s(\d)+\stokens./.matcher(message);
+
+if ( m.find() ) {
+def tmp = m.group().replace('from ','');
+tmp = tmp.replace(' tokens.','');
+tokens = Integer.parseInt( tmp );
+}}}
+
+return tokens;
+
+
+===> "num_matches" <=================================================
+TokenSearch 'fa' sorted 799 matches in 379 from 862 tokens.
+TokenSearch 'dark' sorted 77 matches in 81 from 79 tokens.
+=====================================================================
+def matches = 0;
+
+if(!doc['event_message.keyword'].empty) {
+if( doc['event_code.keyword'].value == "6256" || doc['event_code.keyword'].value == "6276" || doc['event_code.keyword'].value == "6281" ) {
+def message = doc['event_message.keyword'].value.trim();
+def m = /sorted\s(\d)+\smatches/.matcher(message);
+
+if ( m.find() ) {
+def tmp = m.group().replace('sorted ','');
+tmp = tmp.replace(' matches','');
+matches = Integer.parseInt( tmp );
+}}}
+
+return matches;
+
+
+===> "crashDetected" <===============================================
+def crashDetected = false;
+
+if(!doc['event_message.keyword'].empty) {
+if( doc['event_code.keyword'].value == "572" || doc['event_code.keyword'].value == "588" ) {
+def message = doc['event_message.keyword'].value.trim();
+
+if( message.contains("crashDetected:") ) {
+def m = /crashDetected:\s{1,2}True/.matcher(message);
+
+if ( m.find() ) { crashDetected = true; }
+}}}
+return crashDetected;
+
+
+===> "lastExitWasNormal" <===========================================
+def normalExit = false;
+
+if(!doc['event_message.keyword'].empty) {
+if( doc['event_code.keyword'].value == "572" || doc['event_code.keyword'].value == "588" ) {
+def message = doc['event_message.keyword'].value.trim();
+
+if( message.contains("crashDetected:") ) {
+def m = /lastExitWasNormal:True/.matcher(message);
+
+if ( m.find() ) { normalExit = true; }
+}}}
+return normalExit;
+
+
+===> "lastRunTimeMinutes" <==========================================
+def minutes = 0;
+if(!doc['event_message.keyword'].empty) {
+if( doc['event_code.keyword'].value == "572" || doc['event_code.keyword'].value == "588" ) {
+def message = doc['event_message.keyword'].value.trim();
+
+if( message.contains("lastRunTimeSeconds") ) {
+def m1 = /lastRunTimeSeconds:(\d)+/.matcher(message);
+
+if ( m1.find() ) {
+def m2 = /(\d)+/.matcher(m1.group());
+
+if ( m2.find() ) {
+minutes = Integer.parseInt( m2.group() ) / 60;
+}}}}}
+
+return minutes;
