@@ -31,4 +31,5 @@ A few augmentative ideas for expanding capabilities of TheBrain 🧠
     - *example:* download image, crop to dimensions, search and extract image features, save locally (not TheBrain's DB), and visualize output in some sort of novel way
 
 **more info on this second piece forthcoming...**
+
 ![Image](https://github.com/eeik/Brain-Extensions/blob/master/BrainConsole%20App.png)
