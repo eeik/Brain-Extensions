@@ -8,6 +8,17 @@ A few augmentative ideas for expanding capabilities of TheBrain 🧠
 * Kibana scripted fields to unlock insights into logfile data
 * Kibana search queries to build custom dashboards atop for historical review
 
+## Pre-requisites
+* [Elasticsearch](https://www.elastic.co/downloads/elasticsearch) for storing and indexing logfile entries
+* [Kibana](https://www.elastic.co/downloads/kibana) for local visualizations and search of Elasticsearch index
+* [Logstash](https://www.elastic.co/downloads/logstash) for *.log file parsing and storage into Elasticsearch index
+
+## Config and logfile parsing logic
+* [Config for parsing TheBrain logfiles](https://github.com/eeik/Brain-Extensions/blob/master/BrainLogs.config)
+
+![Image](https://github.com/eeik/Brain-Extensions/blob/master/Core%20Dashboard.png)
+
+
 ## Django Inlay/Overlay App
 *for interrogating and visualizing TheBrain w/ logfile historical overlay*
 * R/O connection to TheBrain database for real-time state insights
