@@ -15,6 +15,7 @@ A few augmentative ideas for expanding capabilities of TheBrain 🧠
 
 ## Config and logfile parsing logic
 * [Config for parsing TheBrain logfiles](https://github.com/eeik/Brain-Extensions/blob/master/BrainLogs.config)
+* [Kibana scripted fields](https://github.com/eeik/Brain-Extensions/blob/master/Scripted%20Field%20Code.txt)
 
 ![Image](https://github.com/eeik/Brain-Extensions/blob/master/Core%20Dashboard.png)
 
